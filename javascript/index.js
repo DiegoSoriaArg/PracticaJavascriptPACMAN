@@ -51,15 +51,6 @@ class Player {
   }
 }
 
-//Creamos un array multidimencional para enmarcar los limites de una caja o perimetro
-const map = [
-  ['-', '-', '-', '-', '-', '-'],
-  ['-', ' ', ' ', ' ', ' ', '-'],
-  ['-', ' ', '-', '-', ' ', '-'],
-  ['-', ' ', ' ', ' ', ' ', '-'],
-  ['-', '-', '-', '-', '-', '-']
-];
-
 //Creamos un array de "perimetros"
 const boundaries = [];
 
@@ -74,6 +65,34 @@ const player = new Player({
     y: 0,
   },
 });
+
+
+//con esta constante, especificaremos el movimiento en el funcion recursiva
+const keys = {
+  w: {
+    pressed: false
+  },
+  a: {
+    pressed: false
+  },
+  s: {
+    pressed: false
+  },
+  d: {
+    pressed: false
+  }
+}
+
+let lastKey = '';
+
+//Creamos un array multidimencional para enmarcar los limites de una caja o perimetro
+const map = [
+  ['-', '-', '-', '-', '-', '-'],
+  ['-', ' ', ' ', ' ', ' ', '-'],
+  ['-', ' ', '-', '-', ' ', '-'],
+  ['-', ' ', ' ', ' ', ' ', '-'],
+  ['-', '-', '-', '-', '-', '-']
+];
 
 //Recorremos el array map y mediante dos funciones callback lo dibujamos
 map.forEach((row, i) => {
@@ -94,36 +113,68 @@ map.forEach((row, i) => {
   });
 });
 
+//Esta funcion es recursiva y nos ayuda a crear el movimiento del jugador
 function animate() {
   requestAnimationFrame(animate);
-  //console.log('sdfsdgf');
+  c.clearRect(0, 0, canvas.width, canvas.height);
+
   //Recorremos el array de perimetros y mediante una funcion de linea los dibujamos
   boundaries.forEach((boundary) => {
     boundary.draw();
   });
 
   player.update();
-}
+  player.velocity.x = 0;
+  player.velocity.y = 0;
 
+  if(keys.w.pressed && lastKey === 'w') {
+    player.velocity.y = -5
+  } else if(keys.a.pressed && lastKey === 'a') {
+    player.velocity.x = -5
+  } else if(keys.s.pressed && lastKey === 's') {
+    player.velocity.y = 5 
+  } else if(keys.d.pressed && lastKey === 'd') {
+    player.velocity.x = 5
+  }
+} 
 animate();
 
-
-
-//Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento)
+//Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento) para un movimiento continuo
 addEventListener('keydown', ({key}) => {
   switch (key) {
     case 'w':
-      player.velocity.y = -5;
+      keys.w.pressed = true;
+      lastKey = 'w';
       break;
     case 'a':
-      player.velocity.x = -5;
+      keys.a.pressed = true;
+      lastKey = 'a';
       break;
     case 's':
-      player.velocity.y = 5;
+      keys.s.pressed = true;
+      lastKey = 's';
       break;
     case 'd':
-      player.velocity.x = 5;
+      keys.d.pressed = true;
+      lastKey = 'd';
       break;
   }
-  console.log(player.velocity);
+})
+
+//Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento) para un movimiento con pausa
+addEventListener('keyup', ({key}) => {
+  switch (key) {
+    case 'w':
+      keys.w.pressed = false;
+      break;
+    case 'a':
+      keys.a.pressed = false;
+      break;
+    case 's':
+      keys.s.pressed = false;
+      break;
+    case 'd':
+      keys.d.pressed = false;
+      break;
+  }
 })
