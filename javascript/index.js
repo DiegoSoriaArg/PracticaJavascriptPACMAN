@@ -92,8 +92,4 @@ boundaries.forEach((boundary) => {
   boundary.draw();
 });
 
-boundaries.forEach(boundary => {
-    boundary.draw()
-})
-
 player.draw();
