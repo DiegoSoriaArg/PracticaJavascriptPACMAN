@@ -36,5 +36,5 @@ const boundaries = [
 
 
 boundaries.forEach(boundary => {
-    boundary.draw()
+    boundary.draw();
 })
