@@ -31,7 +31,7 @@ class Player {
   constructor({position, velocity}) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 10;
+    this.radius = 15;
   }
 
   //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
@@ -41,6 +41,13 @@ class Player {
     c.fillStyle = 'yellow';
     c.fill()
     c.closePath();
+  }
+
+  //Con esta funcion, creamos el movimiento del jugador
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y
   }
 }
 
@@ -59,14 +66,14 @@ const boundaries = [];
 //Creamos un nuevo jugador y le pasamos sus parametros
 const player = new Player({
   position: {
-    x: 40,
-    y: 40
+    x: Boundary.width + Boundary.width / 2,
+    y: Boundary.height + Boundary.height / 2
   },
   velocity: {
     x: 0,
-    y: 0
-  }
-})
+    y: 0,
+  },
+});
 
 //Recorremos el array map y mediante dos funciones callback lo dibujamos
 map.forEach((row, i) => {
@@ -87,9 +94,36 @@ map.forEach((row, i) => {
   });
 });
 
-//Recorremos el array de perimetros y mediante una funcion de linea los dibujamos
-boundaries.forEach((boundary) => {
-  boundary.draw();
-});
+function animate() {
+  requestAnimationFrame(animate);
+  //console.log('sdfsdgf');
+  //Recorremos el array de perimetros y mediante una funcion de linea los dibujamos
+  boundaries.forEach((boundary) => {
+    boundary.draw();
+  });
 
-player.draw();
+  player.update();
+}
+
+animate();
+
+
+
+//Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento)
+addEventListener('keydown', ({key}) => {
+  switch (key) {
+    case 'w':
+      player.velocity.y = -5;
+      break;
+    case 'a':
+      player.velocity.x = -5;
+      break;
+    case 's':
+      player.velocity.y = 5;
+      break;
+    case 'd':
+      player.velocity.x = 5;
+      break;
+  }
+  console.log(player.velocity);
+})
