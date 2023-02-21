@@ -12,16 +12,19 @@ canvas.height = innerHeight;
 class Boundary {
   static width = 40;
   static height = 40;
-  constructor({ position }) {
+  constructor({ position, image }) {
     this.position = position;
     this.width = 40;
     this.height = 40;
+    this.image = image;
   }
 
   //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
   draw() {
-    c.fillStyle = "blue";
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    //c.fillStyle = "blue";
+    //c.fillRect(this.position.x, this.position.y, this.width, this.height);
+
+    c.drawImage(this.image, this.position.x, this.position.y);
   }
 }
 
@@ -96,6 +99,10 @@ const map = [
   ['-', '-', '-', '-', '-', '-', '-']
 ];
 
+//Con esta constante, asignamos una imagen .png al contexto canvas y se la pasamos a los perimetros
+const image = new Image();
+image.src = './img/pipeHorizontal.png';
+
 //Recorremos el array map y mediante dos funciones callback lo dibujamos
 map.forEach((row, i) => {
   row.forEach((symbol, j) => {
@@ -107,7 +114,8 @@ map.forEach((row, i) => {
             position: {
               x: Boundary.width * j,
               y: Boundary.height * i
-            }
+            },
+            image: image
           })
         )
         break
