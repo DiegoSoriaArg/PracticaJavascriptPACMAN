@@ -2,7 +2,9 @@
 -generar límites de mapa
 -agregar pacman con movimiento
 -agregar detección de colisión
+
 -intercambiar límites con la imagen
+
 -generar paletas
 -retirar palets en caso de colisión
 -añadir puntuación
