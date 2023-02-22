@@ -1,8 +1,11 @@
 //Obtenemos el elemento canvas
-const canvas = document.querySelector("canvas");
+const canvas = document.querySelector('canvas');
 
 //Obtenemos el contexto 2d del elemento canvas
-const c = canvas.getContext("2d");
+const c = canvas.getContext('2d');
+
+//Obtenemos el elemento span del score
+const scoreElement = document.querySelector('#scoreElement');
 
 //Obtenemos el ancho y el alto de la ventana en el contexto de canvas
 canvas.width = innerWidth;
@@ -106,6 +109,7 @@ const keys = {
 };
 
 let lastKey = "";
+let score = 0;
 
 //Creamos un array multidimencional para enmarcar los limites de una caja o perimetro
 const map = [
@@ -447,6 +451,8 @@ function animate() {
       pellet.radius + player.radius
     ) {
       pellets.splice(i, 1);
+      score += 10;
+      scoreElement.innerHTML = score;
     }
   }
 
