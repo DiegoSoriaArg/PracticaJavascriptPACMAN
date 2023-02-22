@@ -433,8 +433,12 @@ function animate() {
   }
 
   //Recorremos el array de bolitas y mediante su funcion, las dibujamos
-  pellets.forEach((pellet) => {
+  pellets.forEach((pellet, i) => {
     pellet.draw()
+
+    if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y) < pellet.radius + player.radius){
+      pellets.splice(i, 1);
+    }
   })
 
   //Recorremos el array de perimetros y mediante una funcion de linea los dibujamos
