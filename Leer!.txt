@@ -7,10 +7,10 @@
 -retirar palets en caso de colisión
 -añadir puntuación
 -crear fantasma
-
 -crear encendido
 
 -añadir condición de victoria
+
 -diseñar un nivel completo
 -animación de pacman chomp
 
