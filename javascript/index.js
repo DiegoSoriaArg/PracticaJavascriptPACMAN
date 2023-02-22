@@ -1,8 +1,8 @@
 //Obtenemos el elemento canvas
-const canvas = document.querySelector('canvas');
+const canvas = document.querySelector("canvas");
 
 //Obtenemos el contexto 2d del elemento canvas
-const c = canvas.getContext('2d');
+const c = canvas.getContext("2d");
 
 //Obtenemos el ancho y el alto de la ventana en el contexto de canvas
 canvas.width = innerWidth;
@@ -31,7 +31,7 @@ class Boundary {
 //Creamos la clase con la que construiremos un jugador
 class Player {
   //En el constructor, le asignamos las propiedades del contexto
-  constructor({position, velocity}) {
+  constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
     this.radius = 15;
@@ -40,9 +40,9 @@ class Player {
   //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
   draw() {
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
-    c.fillStyle = 'yellow';
-    c.fill()
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "yellow";
+    c.fill();
     c.closePath();
   }
 
@@ -50,10 +50,30 @@ class Player {
   update() {
     this.draw();
     this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y
+    this.position.y += this.velocity.y;
   }
 }
 
+//Esta es la clase que se usara para crear las "bolitas" que comera el jugador (pac-man)
+class Pellet {
+  //En el constructor, le asignamos las propiedades del contexto
+  constructor({ position }) {
+    this.position = position;
+    this.radius = 3;
+  }
+
+  //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "white";
+    c.fill();
+    c.closePath();
+  }
+}
+
+//Creamos un array de "bolitas"
+const pellets = [];
 //Creamos un array de "perimetros"
 const boundaries = [];
 
@@ -61,7 +81,7 @@ const boundaries = [];
 const player = new Player({
   position: {
     x: Boundary.width + Boundary.width / 2,
-    y: Boundary.height + Boundary.height / 2
+    y: Boundary.height + Boundary.height / 2,
   },
   velocity: {
     x: 0,
@@ -72,43 +92,43 @@ const player = new Player({
 //con esta constante, especificaremos el movimiento en el funcion recursiva
 const keys = {
   w: {
-    pressed: false
+    pressed: false,
   },
   a: {
-    pressed: false
+    pressed: false,
   },
   s: {
-    pressed: false
+    pressed: false,
   },
   d: {
-    pressed: false
-  }
-}
+    pressed: false,
+  },
+};
 
-let lastKey = '';
+let lastKey = "";
 
 //Creamos un array multidimencional para enmarcar los limites de una caja o perimetro
 const map = [
-  ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
-  ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
-  ['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
-  ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
-  ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
-  ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
-  ['|', '.', 'b', '.', '[', '+', ']', '.', 'b', '.', '|'],
-  ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
-  ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
-  ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
-  ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
-  ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
-  ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
+  ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
+  ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "7", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
+  ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
+  ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "+", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
+  ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
+  ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "5", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", ".", ".", ".", ".", "p", "|"],
+  ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
 ];
 
 //Con esta funcion, asignamos una imagen .png al contexto canvas y se la pasamos a los perimetros
 function createImage(src) {
   const image = new Image();
   image.src = src;
-  return image
+  return image;
 }
 
 //Recorremos el array map y mediante dos funciones callback lo dibujamos
@@ -449,46 +469,45 @@ function animate() {
   player.update();
   //player.velocity.x = 0;
   //player.velocity.y = 0;
-} 
+}
 animate();
 
 //Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento) para un movimiento continuo
-addEventListener('keydown', ({key}) => {
+addEventListener("keydown", ({ key }) => {
   switch (key) {
-    case 'w':
+    case "w":
       keys.w.pressed = true;
-      lastKey = 'w';
+      lastKey = "w";
       break;
-    case 'a':
+    case "a":
       keys.a.pressed = true;
-      lastKey = 'a';
+      lastKey = "a";
       break;
-    case 's':
+    case "s":
       keys.s.pressed = true;
-      lastKey = 's';
+      lastKey = "s";
       break;
-    case 'd':
+    case "d":
       keys.d.pressed = true;
-      lastKey = 'd';
+      lastKey = "d";
       break;
   }
-})
+});
 
 //Agregamos el evento que captara cuando pulsemos las teclas de movimiento (evento) para un movimiento con pausa
-addEventListener('keyup', ({key}) => {
+addEventListener("keyup", ({ key }) => {
   switch (key) {
-    case 'w':
+    case "w":
       keys.w.pressed = false;
       break;
-    case 'a':
+    case "a":
       keys.a.pressed = false;
       break;
-    case 's':
+    case "s":
       keys.s.pressed = false;
       break;
-    case 'd':
+    case "d":
       keys.d.pressed = false;
       break;
   }
-  
-})
+});
