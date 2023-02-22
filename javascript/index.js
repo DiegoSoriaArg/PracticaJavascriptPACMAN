@@ -86,13 +86,14 @@ class Ghost {
     this.color = color;
     this.prevCollisions = [];
     this.speed = 2;
+    this.scared = false;
   }
 
   //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = this.color;
+    c.fillStyle = this.scared ? 'blue' : this.color;
     c.fill();
     c.closePath();
   }
@@ -102,6 +103,23 @@ class Ghost {
     this.draw();
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+  }
+}
+
+class PowerUp {
+  //En el constructor, le asignamos las propiedades del contexto
+  constructor({ position }) {
+    this.position = position;
+    this.radius = 8;
+  }
+
+  //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "white";
+    c.fill();
+    c.closePath();
   }
 }
 
@@ -134,6 +152,8 @@ const ghosts = [
     color: 'pink'
   }),
 ];
+//Creamos un array para el encendido
+const powerUps = [];
 
 //Creamos un nuevo jugador y le pasamos sus parametros
 const player = new Player({
@@ -384,6 +404,16 @@ map.forEach((row, i) => {
           })
         );
         break;
+      case "p":
+        powerUps.push(
+          new PowerUp({
+            position: {
+              x: j * Boundary.width + Boundary.width / 2,
+              y: i * Boundary.height + Boundary.height / 2,
+            },
+          })
+        );
+        break;
     }
   });
 });
@@ -495,8 +525,55 @@ function animate() {
     }
   }
 
+  // detect collision between ghosts and player
+  for (let i = ghosts.length - 1; 0 <= i; i--) {
+    const ghost = ghosts[i];
+
+    // ghost touches player
+    if (
+      Math.hypot(
+        ghost.position.x - player.position.x,
+        ghost.position.y - player.position.y
+      ) <
+        ghost.radius + player.radius
+    ) {
+      if (ghost.scared) {
+        ghosts.splice(i, 1);
+      } else {
+        cancelAnimationFrame(animationId);
+      }
+
+    }
+  }
+
+  // power up go
+  for (let i = powerUps.length - 1; 0 <= i; i--) {
+    const powerUp = powerUps[i];
+    powerUp.draw();
+
+    // player collides with powerup
+    if (
+      Math.hypot(
+        powerUp.position.x - player.position.x,
+        powerUp.position.y - player.position.y
+      ) <
+      powerUp.radius + player.radius
+    ) {
+      powerUps.splice(i, 1);
+
+      //make ghosts scared
+      ghosts.forEach((ghost) => {
+        ghost.scared = true;
+
+        setTimeout(() => {
+          ghost.scared = false;
+        }, 5000);
+      });
+    }
+  }
+
   //Recorremos el array de bolitas y mediante su funcion, las dibujamos, tambien añadimos una condicion que la eliminara
-  for (let i = pellets.length - 1; 0 < i; i--) {
+  for (let i = pellets.length - 1; 0 <= i; i--) {
     const pellet = pellets[i];
     pellet.draw();
 
@@ -530,23 +607,13 @@ function animate() {
   });
 
   player.update();
-  
+
   //Creamos el movimiento aleatorio para los fantasmas
   ghosts.forEach((ghost) => {
     ghost.update();
 
-    if (
-      Math.hypot(
-        ghost.position.x - player.position.x,
-        ghost.position.y - player.position.y
-      ) <
-      ghost.radius + player.radius
-    ) {
-      cancelAnimationFrame(animationId);
-    }
-
     const collisions = [];
-    boundaries.forEach(boundary => {
+    boundaries.forEach((boundary) => {
       if (
         !collisions.includes("right") &&
         circleCollidesWithRectangle({
@@ -586,7 +653,7 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: -ghost.speed
+              y: -ghost.speed,
             },
           },
           rectangle: boundary,
@@ -602,7 +669,7 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: ghost.speed
+              y: ghost.speed,
             },
           },
           rectangle: boundary,
@@ -610,50 +677,49 @@ function animate() {
       ) {
         collisions.push("down");
       }
-    })
+    });
     if (collisions.length > ghost.prevCollisions.length) {
       ghost.prevCollisions = collisions;
     }
 
     if (JSON.stringify(collisions) !== JSON.stringify(ghost.prevCollisions)) {
       if (ghost.velocity.x > 0) {
-        ghost.prevCollisions.push('right');
+        ghost.prevCollisions.push("right");
       } else if (ghost.velocity.x < 0) {
-        ghost.prevCollisions.push('left');
+        ghost.prevCollisions.push("left");
       } else if (ghost.velocity.y < 0) {
-        ghost.prevCollisions.push('up');
+        ghost.prevCollisions.push("up");
       } else if (ghost.velocity.y > 0) {
-        ghost.prevCollisions.push('down');
+        ghost.prevCollisions.push("down");
       }
-      const pathways = ghost.prevCollisions.filter(collision => {
+      const pathways = ghost.prevCollisions.filter((collision) => {
         return !collisions.includes(collision);
       });
 
       const direction = pathways[Math.floor(Math.random() * pathways.length)];
 
       switch (direction) {
-        case 'down':
+        case "down":
           ghost.velocity.y = ghost.speed;
           ghost.velocity.x = 0;
-          break
-        case 'up':
+          break;
+        case "up":
           ghost.velocity.y = -ghost.speed;
           ghost.velocity.x = 0;
-          break
-        case 'right':
+          break;
+        case "right":
           ghost.velocity.y = 0;
           ghost.velocity.x = ghost.speed;
-          break
-        case 'left':
+          break;
+        case "left":
           ghost.velocity.y = 0;
           ghost.velocity.x = -ghost.speed;
-          break
+          break;
       }
 
       ghost.prevCollisions = [];
     }
-    
-  })
+  });
 }
 animate();
 
