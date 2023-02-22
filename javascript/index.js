@@ -119,8 +119,19 @@ const ghosts = [
     },
     velocity: {
       x: Ghost.speed,
-      y: 0,
+      y: 0
     },
+  }),
+  new Ghost({
+    position: {
+      x: Boundary.width * 6 + Boundary.width / 2,
+      y: Boundary.height * 3 + Boundary.height / 2,
+    },
+    velocity: {
+      x: Ghost.speed,
+      y: 0
+    },
+    color: 'pink'
   }),
 ];
 
@@ -392,9 +403,10 @@ function circleCollidesWithRectangle({ circle, rectangle }) {
   );
 }
 
+let animationId;
 //Esta funcion es recursiva y nos ayuda a crear el movimiento del jugador
 function animate() {
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
 
   if (keys.w.pressed && lastKey === "w") {
@@ -522,6 +534,17 @@ function animate() {
   //Creamos el movimiento aleatorio para los fantasmas
   ghosts.forEach((ghost) => {
     ghost.update();
+
+    if (
+      Math.hypot(
+        ghost.position.x - player.position.x,
+        ghost.position.y - player.position.y
+      ) <
+      ghost.radius + player.radius
+    ) {
+      cancelAnimationFrame(animationId);
+    }
+
     const collisions = [];
     boundaries.forEach(boundary => {
       if (
