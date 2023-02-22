@@ -54,6 +54,26 @@ class Player {
   }
 }
 
+//Esta es la clase que se usara para crear las "bolitas" que comera el jugador (pac-man)
+class Pellet {
+  //En el constructor, le asignamos las propiedades del contexto
+  constructor({ position }) {
+    this.position = position;
+    this.radius = 3;
+  }
+
+  //Creamos una funcion dentro de la clase llamada "dibujar" que creara una imagen de acuerdo a los parametros pasados al contexto (c)
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "white";
+    c.fill();
+    c.closePath();
+  }
+}
+
+//Creamos un array de "bolitas"
+const pellets = [];
 //Creamos un array de "perimetros"
 const boundaries = [];
 
@@ -68,7 +88,6 @@ const player = new Player({
     y: 0,
   },
 });
-
 
 //con esta constante, especificaremos el movimiento en el funcion recursiva
 const keys = {
@@ -296,7 +315,16 @@ map.forEach((row, i) => {
           })
         );
         break;
-      
+      case ".":
+        pellets.push(
+          new Pellet({
+            position: {
+              x: j * Boundary.width + Boundary.width / 2,
+              y: i * Boundary.height + Boundary.height / 2,
+            },
+          })
+        );
+        break;
     }
   });
 });
@@ -403,6 +431,15 @@ function animate() {
       }
     }
   }
+
+  //Recorremos el array de bolitas y mediante su funcion, las dibujamos
+  pellets.forEach((pellet, i) => {
+    pellet.draw()
+
+    if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y) < pellet.radius + player.radius){
+      pellets.splice(i, 1);
+    }
+  })
 
   //Recorremos el array de perimetros y mediante una funcion de linea los dibujamos
   boundaries.forEach((boundary) => {
