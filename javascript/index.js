@@ -510,4 +510,5 @@ addEventListener('keyup', ({key}) => {
       keys.d.pressed = false;
       break;
   }
+  
 })
