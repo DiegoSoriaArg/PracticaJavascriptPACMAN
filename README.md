@@ -1,1 +1,1 @@
-Puedes observar la practica de Layouts Responsivos en netlify: [Clic Aqui!](https://pacmansoriadev.netlify.app/)
+Puedes observar la practica de PACMAN con JavaScript en netlify: [Clic Aqui!](https://pacmansoriadev.netlify.app/)
