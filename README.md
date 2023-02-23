@@ -1,0 +1,1 @@
+Puedes observar la practica de Layouts Responsivos en netlify: [Clic Aqui!](https://pacmansoriadev.netlify.app/)
