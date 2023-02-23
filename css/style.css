@@ -4,9 +4,17 @@ body {
     padding: 10px 20px;
 }
 
+canvas {
+    margin-bottom: -250px;
+}
+
 .parrafoPuntaje {
     color: white;
     margin-bottom: 6px;
     font-size: 14px;
     font-family: sans-serif;
+}
+
+.card-footer-social{
+    color: white;
 }
